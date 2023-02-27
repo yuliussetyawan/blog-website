@@ -4,9 +4,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const app = express();
+const _ = require('lodash');
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
 
 const posts = [];
 
@@ -47,12 +50,14 @@ app.post("/compose", (req, res) => {
 });
 
 app.get('/posts/:postName/', (req, res) => {
-  const requestedTitle = req.params.postName;
-  for (let post of posts){
-    if(requestedTitle === post.title){
-      console.log("match found");
-    } 
-  }
+  const requestedTitle = _.lowerCase(req.params.postName);
+  posts.forEach((post) => {
+    if(requestedTitle === _.lowerCase(post.title)){
+      console.log("Match found");
+    } else {
+      console.log("No match found");
+    }
+  });
 });
 
 app.listen(3000, function () {
